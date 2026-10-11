@@ -1,0 +1,19 @@
+*.log
+__pycache__/
+.DS_Store
+.venv/
+
+# Models and training outputs
+model/
+laya_base/
+*.pt
+*.safetensors
+split.json
+test_scores.json
+
+# Labeled data is kept out of the repo
+data/
+*.tmp
+sentences*.txt
+*.labels.csv
+*.intent.csv
