@@ -1,5 +1,8 @@
 # concise
 
+> [!WARNING]
+> This is a personal experiment, not production-ready software. Expect rough edges and breaking changes, and use it at your own risk.
+
 A macOS helper that scores whether a sentence is concise, short and written in plain English.
 It runs locally: a small Python server answers one yes/no question with [Laya](https://github.com/NandhaKishorM/laya),
 fine-tuned on your own good/bad labels, and a [Hammerspoon](https://www.hammerspoon.org/) script sends it sentences.
