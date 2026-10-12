@@ -5,7 +5,7 @@
 
 A macOS helper that scores whether a sentence is concise, short and written in plain English.
 It runs locally: a small Python server answers one yes/no question with [Laya](https://github.com/NandhaKishorM/laya),
-optionally fine-tuned on your own labels, and a [Hammerspoon](https://www.hammerspoon.org/) script sends it sentences.
+and a [Hammerspoon](https://www.hammerspoon.org/) script sends it sentences.
 
 Nothing leaves your machine except the one-time model download.
 
@@ -20,7 +20,7 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 ## Run the widget
 ```bash
 .venv/bin/python widget/server.py --model path/to/model
-.venv/bin/python widget/server.py --base                  # untrained English model, no fine-tuning needed
+.venv/bin/python widget/server.py --base                  # Laya's English model, downloaded on first run
 ```
 Without `--model` it loads `$CONCISE_MODEL`.
 Options: `--threshold` (default 0.5, env `CONCISE_THRESHOLD`), `--questions` (default `concise.json`), `--host`,
@@ -49,7 +49,7 @@ Cmd/Ctrl shortcuts and app switches, and is never written to disk. The score is 
 It is meant for single sentences, not paragraphs.
 
 ## Question
-`concise.json` holds the question the model answers. A fine-tuned model must be retrained if you reword it.
+`concise.json` holds the question the model answers.
 
 ## License
 MIT
