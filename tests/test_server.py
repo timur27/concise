@@ -8,10 +8,10 @@ from http.server import HTTPServer
 from pathlib import Path
 from unittest import mock
 
-from concise_server import __main__ as entry
-from concise_server.api import Api, make_handler
-from concise_server.config import ROOT, ConfigError, load_settings
-from concise_server.scoring import LayaScorer, Question, ScoringError, load_question
+from plainly_server import __main__ as entry
+from plainly_server.api import Api, make_handler
+from plainly_server.config import ROOT, ConfigError, load_settings
+from plainly_server.scoring import LayaScorer, Question, ScoringError, load_question
 
 QUESTION = Question(key="concise", answer_type="noul", spec={"concise": {"type": "noul", "instructions": "?"}})
 
@@ -38,12 +38,12 @@ class ConfigTest(unittest.TestCase):
         self.model = tempfile.mkdtemp()
 
     def test_flag_beats_bad_env_threshold(self):
-        s = load_settings(["--base", "--threshold", "0.6"], {"CONCISE_THRESHOLD": "abc"})
+        s = load_settings(["--base", "--threshold", "0.6"], {"PLAINLY_THRESHOLD": "abc"})
         self.assertEqual(s.threshold, 0.6)
 
     def test_bad_env_threshold_is_a_config_error(self):
         with self.assertRaisesRegex(ConfigError, "number"):
-            load_settings(["--base"], {"CONCISE_THRESHOLD": "abc"})
+            load_settings(["--base"], {"PLAINLY_THRESHOLD": "abc"})
 
     def test_threshold_out_of_range(self):
         with self.assertRaisesRegex(ConfigError, "between 0 and 1"):
@@ -54,9 +54,17 @@ class ConfigTest(unittest.TestCase):
             load_settings(["--base", "--model", self.model], {})
 
     def test_model_from_env(self):
-        s = load_settings([], {"CONCISE_MODEL": self.model})
+        s = load_settings([], {"PLAINLY_MODEL": self.model})
         self.assertEqual(s.model_dir, Path(self.model))
         self.assertEqual(s.backend, "model")
+
+    def test_pre_rename_env_still_works(self):
+        s = load_settings([], {"CONCISE_MODEL": self.model, "CONCISE_THRESHOLD": "0.7"})
+        self.assertEqual((s.model_dir, s.threshold), (Path(self.model), 0.7))
+
+    def test_new_env_beats_pre_rename_env(self):
+        s = load_settings(["--base"], {"PLAINLY_THRESHOLD": "0.6", "CONCISE_THRESHOLD": "0.7"})
+        self.assertEqual(s.threshold, 0.6)
 
     def test_missing_model(self):
         with self.assertRaisesRegex(ConfigError, "no model"):

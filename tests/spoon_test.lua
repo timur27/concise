@@ -1,5 +1,5 @@
--- Plain-Lua tests for Concise.spoon; no Hammerspoon needed. Run from the repo root: lua tests/spoon_test.lua
-local SPOON = "Concise.spoon/"
+-- Plain-Lua tests for Plainly.spoon; no Hammerspoon needed. Run from the repo root: lua tests/spoon_test.lua
+local SPOON = "Plainly.spoon/"
 
 local failures, count = 0, 0
 local function test(name, fn)
@@ -143,10 +143,10 @@ end)
 
 test("client: typed errors", function()
   local cases = {
-    {-1, nil, "unreachable", "concise server not running at http://127.0.0.1:8765"},
+    {-1, nil, "unreachable", "plainly server not running at http://127.0.0.1:8765"},
     {413, "too_large", "rejected", "text longer than 10000 bytes"},
     {500, "failed", "server", "prediction failed"},
-    {200, "shapeless", "protocol", "unexpected reply from concise server (HTTP 200)"},
+    {200, "shapeless", "protocol", "unexpected reply from plainly server (HTTP 200)"},
     {200, "not json", "protocol", nil},
     {502, "<html>", "protocol", nil},
   }
@@ -250,7 +250,7 @@ test("spoon: start, stop and start again leaves one menu bar item", function()
   spoon:start()
   eq(live.menubars, 1)
   eq(live.hotkeys, 2)
-  eq(live.menu.tooltip, "Concise auto-check in Notes and VS Code (Ctrl+Option+K)")
+  eq(live.menu.tooltip, "Plainly auto-check in Notes and VS Code (Ctrl+Option+K)")
   spoon:stop()
   eq(live.menubars, 0)
   eq(live.hotkeys, 0)
@@ -268,11 +268,23 @@ test("spoon: taps run only with auto-check on and an allowed app in front", func
   spoon:stop()
   live.front = app("com.apple.Notes")
   spoon:start()
-  eq(live.settings["concise.auto"], true)
+  eq(live.settings["plainly.auto"], true)
   eq(live.taps, 3, "watcher and both taps")
   eq(live.menu.title, "ON")
   spoon:stop()
   eq(live.taps, 0, "all stopped")
+end)
+
+test("spoon: restores auto-check saved under the pre-rename key", function()
+  local spoon, live = newSpoon()
+  live.settings["concise.auto"] = true
+  spoon:start()
+  eq(live.menu.title, "ON")
+  eq(live.settings["plainly.auto"], true)
+  live.settings["plainly.auto"] = false
+  spoon:stop()
+  spoon:start()
+  eq(live.menu.title, "OFF", "new key wins once set")
 end)
 
 test("spoon: auto-check rate-limits error alerts but shows results", function()
@@ -286,7 +298,7 @@ test("spoon: auto-check rate-limits error alerts but shows results", function()
   eq(live.menu.title, "ON ?")
   live.status, live.body = 200, "ok"
   spoon:_onSentence("One two three.")
-  eq(live.alerts[2], "0.80  ✓ concise")
+  eq(live.alerts[2], "0.80  ✓ plain")
   eq(live.menu.title, "ON ✓0.80")
 end)
 
@@ -297,8 +309,8 @@ test("spoon: several servers are labelled", function()
   spoon:start()
   live.alerts = {}
   spoon:_scoreAll("One two three.", false)
-  eq(live.alerts[1], "Base: 0.80  ✓ concise")
-  eq(live.alerts[2], "Tuned: 0.80  ✓ concise")
+  eq(live.alerts[1], "Base: 0.80  ✓ plain")
+  eq(live.alerts[2], "Tuned: 0.80  ✓ plain")
 end)
 
 _G.hs = nil

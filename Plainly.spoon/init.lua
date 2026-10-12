@@ -1,13 +1,13 @@
---- === Concise ===
+--- === Plainly ===
 ---
---- Scores whether a sentence is concise, using a local concise server (see PROTOCOL.md).
+--- Scores whether a sentence is plain and concise, using a local plainly server (see PROTOCOL.md).
 --- Ctrl+Option+C scores the selection; Ctrl+Option+K or the menu bar item toggles auto-check,
 --- which scores each sentence as you finish typing it in the allowed apps.
 ---
 --- Usage, from ~/.hammerspoon/init.lua:
----   hs.loadSpoon("Concise")
----   spoon.Concise:bindHotkeys(spoon.Concise.defaultHotkeys)
----   spoon.Concise:start()
+---   hs.loadSpoon("Plainly")
+---   spoon.Plainly:bindHotkeys(spoon.Plainly.defaultHotkeys)
+---   spoon.Plainly:start()
 
 local function loadFile(file) return dofile(hs.spoons.resourcePath(file)) end
 local Segmenter = loadFile("segmenter.lua")
@@ -17,7 +17,7 @@ local AutoCheck = loadFile("autocheck.lua")
 
 local obj = {}
 obj.__index = obj
-obj.name = "Concise"
+obj.name = "Plainly"
 obj.version = "1.0"
 obj.license = "MIT - https://opensource.org/licenses/MIT"
 
@@ -33,10 +33,11 @@ obj.abbreviations = Segmenter.DEFAULT_ABBREVIATIONS
 obj.errorAlertInterval = 60
 -- Debug aid: alert each detected sentence instead of scoring it. This shows typed text on screen.
 obj.showSentences = false
-obj.settingsKey = "concise.auto"
+obj.settingsKey = "plainly.auto"
+obj.legacySettingsKey = "concise.auto"
 obj.defaultHotkeys = {score = {{"ctrl", "alt"}, "C"}, toggleAuto = {{"ctrl", "alt"}, "K"}}
 
-obj.logger = hs.logger.new("concise", "info")
+obj.logger = hs.logger.new("plainly", "info")
 
 function obj:init()
   self._hotkeys = {}
@@ -55,14 +56,14 @@ local function describeHotkey(spec)
 end
 
 local function formatResult(r)
-  return string.format("%.2f  %s", r.score, r.good and "✓ concise" or "✗ wordy")
+  return string.format("%.2f  %s", r.score, r.good and "✓ plain" or "✗ wordy")
 end
 
 local function formatCompact(r)
   return string.format("%s%.2f", r.good and "✓" or "✗", r.score)
 end
 
---- Concise:bindHotkeys(mapping)
+--- Plainly:bindHotkeys(mapping)
 --- Method
 --- Binds hotkeys. mapping has optional `score` and `toggleAuto` entries, each {mods, key}.
 function obj:bindHotkeys(mapping)
@@ -83,7 +84,7 @@ function obj:bindHotkeys(mapping)
   return self
 end
 
---- Concise:start()
+--- Plainly:start()
 --- Method
 --- Shows the menu bar item, enables the hotkeys and restores the saved auto-check state.
 function obj:start()
@@ -103,12 +104,14 @@ function obj:start()
   self._menu = hs.menubar.new()
   self._menu:setClickCallback(function() self:toggleAuto() end)
   for _, hk in pairs(self._hotkeys) do hk:enable() end
-  self:setAuto(hs.settings.get(self.settingsKey) == true)
+  local saved = hs.settings.get(self.settingsKey)
+  if saved == nil then saved = hs.settings.get(self.legacySettingsKey) end
+  self:setAuto(saved == true)
   self:_checkServers()
   return self
 end
 
---- Concise:stop()
+--- Plainly:stop()
 --- Method
 --- Stops auto-check, disables the hotkeys and removes the menu bar item. start() can be called again later.
 function obj:stop()
@@ -122,7 +125,7 @@ function obj:stop()
   return self
 end
 
---- Concise:setAuto(on)
+--- Plainly:setAuto(on)
 --- Method
 --- Turns auto-check on or off and remembers the choice across restarts.
 function obj:setAuto(on)
@@ -136,10 +139,10 @@ end
 function obj:toggleAuto()
   if not self._running then return end
   self:setAuto(not self._autoCheck:isRunning())
-  hs.alert.show("concise auto-check " .. (self._autoCheck:isRunning() and "ON" or "OFF"))
+  hs.alert.show("plainly auto-check " .. (self._autoCheck:isRunning() and "ON" or "OFF"))
 end
 
---- Concise:scoreSelection()
+--- Plainly:scoreSelection()
 --- Method
 --- Copies the selected text (restoring the clipboard afterwards) and shows its score.
 function obj:scoreSelection()
@@ -223,7 +226,7 @@ function obj:_updateMenu()
   local names = {}
   for _, name in pairs(self.apps) do names[#names + 1] = name end
   table.sort(names)
-  local tooltip = "Concise auto-check in " .. table.concat(names, " and ")
+  local tooltip = "Plainly auto-check in " .. table.concat(names, " and ")
   local key = describeHotkey(self._hotkeySpecs.toggleAuto)
   if key then tooltip = tooltip .. " (" .. key .. ")" end
   self._menu:setTooltip(tooltip)

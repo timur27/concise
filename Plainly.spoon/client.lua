@@ -1,4 +1,4 @@
--- HTTP client for the concise server's v1 wire contract (see PROTOCOL.md).
+-- HTTP client for the plainly server's v1 wire contract (see PROTOCOL.md).
 -- Callbacks get (nil, result) or (err), where err = {kind, status, code, message} and kind is one of:
 --   "unreachable" (no server), "rejected" (4xx, the text was refused), "server" (5xx), "protocol" (unexpected reply).
 local Client = {}
@@ -22,14 +22,14 @@ end
 
 function Client:_failure(status, body)
   if status < 0 then
-    return {kind = "unreachable", status = status, message = "concise server not running at " .. self.url}
+    return {kind = "unreachable", status = status, message = "plainly server not running at " .. self.url}
   end
   local reply = self:_decode(body)
   local e = reply and type(reply.error) == "table" and reply.error
   if status ~= 200 and e and type(e.message) == "string" then
     return {kind = status < 500 and "rejected" or "server", status = status, code = e.code, message = e.message}
   end
-  return {kind = "protocol", status = status, message = "unexpected reply from concise server (HTTP " .. status .. ")"}
+  return {kind = "protocol", status = status, message = "unexpected reply from plainly server (HTTP " .. status .. ")"}
 end
 
 function Client:score(text, callback)
