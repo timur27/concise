@@ -37,7 +37,7 @@ The request and response format is in [docs/PROTOCOL.md](docs/PROTOCOL.md).
 ## Load the Hammerspoon Spoon
 Link the Spoon into Hammerspoon, then load it from `~/.hammerspoon/init.lua`:
 ```bash
-ln -s "$PWD/clients/hammerspoon/Plainly.spoon" ~/.hammerspoon/Spoons/Plainly.spoon
+ln -s "$PWD/clients/hammerspoon" ~/.hammerspoon/Spoons/Plainly.spoon
 ```
 ```lua
 hs.loadSpoon("Plainly")
@@ -48,7 +48,7 @@ spoon.Plainly:bindHotkeys(spoon.Plainly.defaultHotkeys)
 spoon.Plainly:start()
 ```
 `spoon.Plainly:stop()` removes the menu bar item, disables the hotkeys and stops auto-check.
-The other settings (pause length, minimum words, abbreviations) are documented at the top of `clients/hammerspoon/Plainly.spoon/init.lua`.
+The other settings (pause length, minimum words, abbreviations) are documented at the top of `clients/hammerspoon/init.lua`.
 
 | Key | Action |
 |---|---|
@@ -64,8 +64,8 @@ It is meant for single sentences, not paragraphs.
 ## Layout
 | Path | What |
 |---|---|
-| `src/plainly_server/` | Python scoring server |
-| `clients/hammerspoon/Plainly.spoon/` | Hammerspoon client |
+| `src/` | Python scoring server, installed as the `plainly_server` package |
+| `clients/hammerspoon/` | Hammerspoon Spoon, linked as `Plainly.spoon` |
 | `config/concise.json` | the question the model answers |
 | `docs/` | wire protocol |
 | `tests/` | Python and Lua tests |
@@ -80,9 +80,9 @@ Spoon reads the old saved auto-check state once. Re-link the Spoon as `Plainly.s
 `spoon.Plainly` in `~/.hammerspoon/init.lua`.
 
 ## Tests
-Neither suite needs Laya, Hammerspoon or a running server.
+Neither suite needs Laya, Hammerspoon or a running server. The Python tests need the package installed (`pip install -e .`).
 ```bash
-PYTHONPATH=src python3 -m unittest discover -s tests
+.venv/bin/python -m unittest discover -s tests
 lua tests/spoon_test.lua
 ```
 
