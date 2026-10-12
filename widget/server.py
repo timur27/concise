@@ -13,7 +13,7 @@ MAX_BYTES = 10_000
 
 def parse_args():
     p = argparse.ArgumentParser(description="Score sentences for conciseness over local HTTP.")
-    p.add_argument("--model", default=os.environ.get("CONCISE_MODEL", os.path.join(ROOT, "tuning", "model")),
+    p.add_argument("--model", default=os.environ.get("CONCISE_MODEL", ""),
                    help="fine-tuned model directory (env CONCISE_MODEL)")
     p.add_argument("--base", action="store_true", help="use the untrained English Laya model instead")
     p.add_argument("--questions", default=os.path.join(ROOT, "concise.json"), help="question file the model answers")
