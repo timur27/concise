@@ -3,9 +3,12 @@
 > [!WARNING]
 > This is a personal experiment, not production-ready software. Expect rough edges and breaking changes, and use it at your own risk.
 
-A macOS helper that scores whether a sentence is plain: concise, short and written in plain English.
-It runs locally: a small Python server answers one yes/no question with [Laya](https://github.com/NandhaKishorM/laya),
-and a [Hammerspoon](https://www.hammerspoon.org/) Spoon sends it sentences.
+plainly is a lightweight macOS watcher, built on [Hammerspoon](https://www.hammerspoon.org/), that checks one sentence
+at a time as you type. Each sentence you finish goes to a local server, where a model judges whether it's concise,
+plain English, and the verdict appears in the menu bar while you're still writing.
+
+The model today is [Laya](https://github.com/NandhaKishorM/laya); the server can run any engine that answers the same
+yes/no question.
 
 Nothing leaves your machine except the one-time model download.
 
