@@ -75,7 +75,7 @@ class ConfigTest(unittest.TestCase):
     def test_defaults(self):
         s = load_settings(["--base"], {})
         self.assertEqual((s.host, s.port, s.threshold, s.backend), ("127.0.0.1", 8765, 0.5, "base"))
-        self.assertEqual(s.questions_path, ROOT / "concise.json")
+        self.assertEqual(s.questions_path, ROOT / "config" / "concise.json")
 
 
 class QuestionTest(unittest.TestCase):
@@ -86,7 +86,7 @@ class QuestionTest(unittest.TestCase):
         return f.name
 
     def test_repo_question_file(self):
-        q = load_question(ROOT / "concise.json")
+        q = load_question(ROOT / "config" / "concise.json")
         self.assertEqual((q.key, q.answer_type), ("concise", "noul"))
 
     def test_key_comes_from_file(self):

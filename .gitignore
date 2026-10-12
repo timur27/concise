@@ -17,3 +17,5 @@ data/
 sentences*.txt
 *.labels.csv
 *.intent.csv
+*.egg-info/
+build/

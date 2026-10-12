@@ -1,5 +1,5 @@
 -- Plain-Lua tests for Plainly.spoon; no Hammerspoon needed. Run from the repo root: lua tests/spoon_test.lua
-local SPOON = "Plainly.spoon/"
+local SPOON = "clients/hammerspoon/Plainly.spoon/"
 
 local failures, count = 0, 0
 local function test(name, fn)

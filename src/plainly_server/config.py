@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Mapping, Sequence
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_PORT = 8765
 
 
@@ -35,7 +35,7 @@ def _parser() -> argparse.ArgumentParser:
     source = p.add_mutually_exclusive_group()
     source.add_argument("--model", help="fine-tuned model directory (env PLAINLY_MODEL)")
     source.add_argument("--base", action="store_true", help="use the untrained English Laya model instead")
-    p.add_argument("--questions", type=Path, default=ROOT / "concise.json", help="question file the model answers")
+    p.add_argument("--questions", type=Path, default=ROOT / "config" / "concise.json", help="question file the model answers")
     p.add_argument("--threshold", help="score at or above which a sentence counts as good (env PLAINLY_THRESHOLD)")
     p.add_argument("--host", default="127.0.0.1")
     p.add_argument("--port", type=int, default=DEFAULT_PORT)
